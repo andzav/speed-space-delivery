@@ -26,36 +26,71 @@
     </nav> 
     <div class="container">
   <h2>List of order</h2>    
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Planets</th>
-        <th>Id</th>
-        <th>other</th>
-        <th>other</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-      </tr>
-      <tr>
-        <td>1`</td>
-        <td>2`</td>
-        <td>3`</td>
-        <td>4`</td>
-      </tr>
-      <tr>
-        <td>1``</td>
-        <td>2``</td>
-        <td>3``</td>
-        <td>4``</td>
-      </tr>
-    </tbody>
-  </table>
+ <button class="accordion">Active</button>
+ <div class=panel>
+    <div class="table-responsive">
+     <table class="table">
+         <th>
+             Planes-senders
+         </th>
+         <th>
+             Planets-receivers
+         </th>
+         <th>
+             #id
+         </th>
+     </table>
+     </div>
+ </div>
+  <button class="accordion">Passed</button>
+ <div class=panel>
+    <div class="table-responsive">
+     <table class="table">
+         <th>
+             Planes-senders
+         </th>
+         <th>
+             Planets-receivers
+         </th>
+         <th>
+             #id
+         </th>
+     </table>
+     </div>
+ </div>
+  <button class="accordion">Some elses</button>
+ <div class=panel>
+    <div class="table-responsive">
+     <table class="table">
+         <th>
+             Planes-senders
+         </th>
+         <th>
+             Planets-receivers
+         </th>
+         <th>
+             #id
+         </th>
+     </table>
+     </div>
+ </div>
+   
     </div>
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function(){
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
+        }
+    }
+}
+    </script>
 </body>
 </html>
