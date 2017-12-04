@@ -1,4 +1,4 @@
-var url="https://someleltest.herokuapp.com/api/planets";
+var url="https://sspacedelivery.herokuapp.com/api/planets";
 var urlGet=url+"?SID=";
 	urlGet+=JSON.parse(localStorage.getItem("SID"));
 var planets_NODE=document.getElementById("planets");
@@ -19,7 +19,7 @@ function myGet(responseFunction){
 		 error:function(status){alert(status.responseText);}
 			});
 		}else {$.ajax({
-			url:"https://someleltest.herokuapp.com/api/planets/getAll",
+			url:"https://sspacedelivery.herokuapp.com/api/planets/getAll",
 			type:'GET',
 			success:function (data){console.log(data);buildHtmlTablePlanetsUsers(planets_NODE,data)}
 		})}
