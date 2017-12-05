@@ -6,6 +6,7 @@ let helmet = require('helmet');
 let mongoose = require('mongoose');
 let Fingerprint = require('./remastered_modules/fingerprint.js');
 let cors = require('cors');
+let userModel = require('./app/routes/user.js');
 let autoParse = require('auto-parse');
 
 let app = express();
@@ -60,10 +61,19 @@ app.all('/*', function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + "/public/pages/index.html");
+    res.sendFile(__dirname + "/public/pages/index.html");
 });
 app.get('/:filename', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    
+    userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
+        if (err) res.sendStatus(400);
+        else if(person){
+            res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+        }else{
+            res.sendFile(path.join(__dirname, 'public', 'pages', 'sign-up.html'));
+        }
+    }
 });
 
 //Log if error
