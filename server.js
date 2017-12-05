@@ -73,7 +73,7 @@ app.get('/:filename', function(req, res) {
         }else{
             res.sendFile(path.join(__dirname, 'public', 'pages', 'sign-up.html'));
         }
-    }
+    });
 });
 
 //Log if error
