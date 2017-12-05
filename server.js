@@ -71,7 +71,8 @@ app.get('/:filename', function(req, res) {
         else if(person){
             res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
         }else{
-            res.sendFile(path.join(__dirname, 'public', 'pages', 'sign-up.html'));
+            //SIGN NOT SING
+            res.sendFile(path.join(__dirname, 'public', 'pages', 'sing-up.html'));
         }
         console.log(person);
     });
