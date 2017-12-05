@@ -65,9 +65,9 @@ router.route('/')
             if (err) res.status(400).send('Error while querying database');
             else if(person){
                 if(person.permission==='admin'){
-                    if(newPlanet&&newPlanet.name&&newPlanet.type&&newPlanet.galactic
-                        &&newPlanet.position.x&&newPlanet.position.y&&newPlanet.image
-                        &&newPlanet.diameter&&newPlanet.color){
+                    if(newPlanet&&newPlanet.name!==undefined&&newPlanet.type!==undefined&&newPlanet.galactic!==undefined
+                        &&newPlanet.position.x!==undefined&&newPlanet.position.y!==undefined&&newPlanet.image!==undefined
+                        &&newPlanet.diameter!==undefined&&newPlanet.color!==undefined){
                             if(newPlanet.type==='moon'&&newPlanet.moonOf===undefined) res.status(400).send('Base planet not specified');
                             else{
                                 if(newPlanet.type==='moon'){
@@ -143,7 +143,7 @@ router.route('/')
         let planet = req.body.planetName;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
-        userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
+        userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
             if (err) res.status(400).send('Error while querying database');
             else if(person){
                 if(person.permission==='admin'){
@@ -155,9 +155,9 @@ router.route('/')
                                 else if(result&&result.length>0){
                                     let err0r = false;
                                     result.forEach(function(planetk, i){
-                                        pathModel.find({$or: [{'source': planetk.name}, {'target': planetk.name}]}, function(err, data){
+                                        pathModel.findOne({$or: [{'source': planetk.name}, {'target': planetk.name}]}, function(err, data){
                                             if (err) res.status(400).send('Error while querying path database');
-                                            else if(data.length===0){
+                                            else if(!data){
                                                 planetModel.remove({'_id': planetk._id}, function (err) {
                                                     if (err){
                                                         if(!err0r) res.status(400).send('Error while removing planet');
