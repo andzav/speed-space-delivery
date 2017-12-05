@@ -61,20 +61,27 @@ app.all('/*', function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + "/public/pages/index.html");
+    res.sendFile(path.join(__dirname, 'public', 'pages', 'index.html'));
 });
 app.get('/:filename', function(req, res) {
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
-    console.log(req.params.filename);
     userModel.findOne({'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
         if (err) res.sendStatus(400);
         else if(person){
-            res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+            if(person.permission==='admin') res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+            else if(person.permission==='operator'){
+                if(req.params.filename==='users') res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
+                else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+            }else{
+                if(req.params.filename!=='main_user_page.html'&&req.params.filename!=='log-in.html'&&req.params.filename!=='sing-up.html'&&req.params.filename!=='index.html')                  res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
+                else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+            }
         }else{
             //SIGN NOT SING
-            res.sendFile(path.join(__dirname, 'public', 'pages', 'sing-up.html'));
+            if(req.params.filename!=='log-in.html'&&req.params.filename!=='sing-up.html'&&req.params.filename!=='index.html')
+                res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
+            else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
         }
-        console.log(person);
     });
 });
 
