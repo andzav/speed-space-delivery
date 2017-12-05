@@ -24,6 +24,48 @@ function loadСontainers() {
     })
 }
 
+$('#Accept').click(function(){
+    var container_JSON={
+		  "SID":JSON.parse(localStorage.getItem("SID")),
+		  "containerID":$("#cID").val()
+    }
+     $.ajax({
+         type: "POST",
+         url: url+"/acceptContainer",
+         data: container_JSON,
+         success: function () {
+             loadContainers();
+         },
+         error: function (status) {
+             alert(status.responseText)
+         }
+     })
+});
+
+var getImageFromUrl = function(data, callback) {
+    let url = 'https://chart.googleapis.com/chart?chs=512x512&cht=qr&chl='+data+'&choe=UTF-8&chld=H';
+    var img = new Image();
+
+    img.onError = function() {
+        alert('Cannot load image: "'+url+'"');
+    };
+    img.onload = function() {
+        callback(img);
+    };
+    img.src = url;
+    img.crossOrigin = "";
+}
+
+
+var createPDF = function(imgData) {
+    var doc = new jsPDF();
+    doc.setFontSize(40)
+    doc.addImage(imgData, 'JPEG', 20, 20, 170, 170);
+    doc.text(50, 25, 'SSDC000000001')
+    doc.autoPrint()
+    window.open(doc.output('bloburl'), '_blank');
+}
+
 function buildHtmlTable(selector, responseArr) {
     var keys = [];
     responseArr.map(function (el) {
@@ -31,7 +73,6 @@ function buildHtmlTable(selector, responseArr) {
             if (keys.indexOf(k) === -1) keys.push(k);
         }
     });
-
 
     keys.push('Apply'); 
     var table = "<table class='table-bordered table-hover table-responsive' style='margin: 0 auto; border-collapse: collapse;'>";
@@ -109,6 +150,9 @@ function confirmContainer(e){
             if(el.childNodes[0] && el.childNodes[0].value && el.childNodes[0].value.length>0) params = el.childNodes[0].value;
         })
         let shipID = params.split(' ').pop();
+        
+        getImageFromUrl("SSDС"+(1000000000+containerID).toString().substr(1), createPDF);
+        
         if(containerID&&shipID){
             var confirm = {
                 "SID": JSON.parse(localStorage.getItem("SID")),
