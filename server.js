@@ -6,7 +6,7 @@ let helmet = require('helmet');
 let mongoose = require('mongoose');
 let Fingerprint = require('./remastered_modules/fingerprint.js');
 let cors = require('cors');
-let userModel = require('./app/routes/user.js');
+let userModel = require('./app/models/user.js');
 let autoParse = require('auto-parse');
 
 let app = express();
