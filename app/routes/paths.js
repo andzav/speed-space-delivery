@@ -42,6 +42,27 @@ router.route('/')
                             res.json(result);   
                         }else res.status(400).send('Can not find any paths');
                     });
+                }else if (person.permission==='default'){
+                    pathModel.find({}, '-_id -__v', {sort: {id: 1}}, function(err, result){
+                        if (err) res.status(400).send('Error while querying paths database');
+                        else if(result&&result.length>0){
+                            result = result.map(function(el){
+                                let modified = {};
+                                el.path = "From "+el.source+" to "+el.target; 
+                                modified.data = el;
+                                modified.position = {};
+                                modified.group = "edges";
+                                modified.removed = false;
+                                modified.selected = false;
+                                modified.selectable = true;
+                                modified.locked = true;
+                                modified.grabbable = true;
+                                modified.classes = "";
+                                return modified;
+                            });
+                            res.json(result);   
+                        }else res.status(400).send('Can not find any paths');
+                    });
                 }else res.status(401).send('Not enough permission');
             }else res.status(401).send('User not found');
         });
