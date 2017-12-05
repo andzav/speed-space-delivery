@@ -66,7 +66,7 @@ app.get('/', function(req, res) {
 app.get('/:filename', function(req, res) {
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
-    userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
+    userModel.findOne({'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
         if (err) res.sendStatus(400);
         else if(person){
             res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
