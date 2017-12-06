@@ -746,7 +746,7 @@ cron.schedule('0 0 0 * * *', function () {
     });
     containerModel.find({}, function (err, containers) {
         if (err) console.log(err);
-        else if (result) {
+        else if (containers) {
             containers.map(function (container) {
                 let difference = Date.now() - container._id.getTimestamp();
                 let daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
