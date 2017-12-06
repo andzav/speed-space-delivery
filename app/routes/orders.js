@@ -13,8 +13,8 @@ let utils = require('../utils/algorithm.js');
 
 router.route('/')
     .get(function (req, res) {
-        let SID = req.query.SID || "";
-        let trackID = req.query.trackID || -1;
+        let SID = req.query.SID;
+        let trackID = req.query.trackID;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({
@@ -58,7 +58,7 @@ router.route('/')
                             }
                                     ]
                     };
-                    if (trackID) query.trackID = trackID;
+                    if (trackID !== undefined) query.trackID = trackID;
                     orderModel.find(query, '-_id -__v', {
                         sort: {
                             trackID: 1
@@ -77,31 +77,31 @@ router.route('/')
 
                     //Getting search parameters from url ?location=Earth&from=2017-09-18&status=inprogress"
                     let queryparams = {};
-                    if (trackID) queryparams.trackID = trackID;
-                    if (req.query.location) queryparams['$or'] = [{
+                    if (trackID !== undefined) queryparams.trackID = trackID;
+                    if (req.query.location !== undefined) queryparams['$or'] = [{
                         'from': req.query.location
                     }, {
                         'to': req.query.location
                     }, {
                         'location': req.query.location
                     }];
-                    if (req.query.weigth) queryparams.weigth = req.query.weigth;
-                    if (req.query.volume) queryparams.volume = req.query.volume;
-                    if (req.query.from) {
+                    if (req.query.weigth !== undefined) queryparams.weigth = req.query.weigth;
+                    if (req.query.volume !== undefined) queryparams.volume = req.query.volume;
+                    if (req.query.from !== undefined) {
                         let date = new Date(req.query.from);
                         if (date.toString() !== 'Invalid Date') queryparams.reg_date = {
                             $gt: new Date(req.query.from)
                         };
                     }
-                    if (req.query.to) {
+                    if (req.query.to !== undefined) {
                         let date = new Date(req.query.to);
                         if (date.toString() !== 'Invalid Date') queryparams.reg_date = {
                             $lt: new Date(req.query.to)
                         };
                     }
-                    if (req.query.type) queryparams.type = req.query.type;
-                    if (req.query.containerID) queryparams.containerID = req.query.containerID;
-                    if (req.query.status) queryparams.status = req.query.status;
+                    if (req.query.type !== undefined) queryparams.type = req.query.type;
+                    if (req.query.containerID !== undefined) queryparams.containerID = req.query.containerID;
+                    if (req.query.status !== undefined) queryparams.status = req.query.status;
                     //
 
                     orderModel.find(queryparams, '-_id -__v', function (err, response) {
@@ -116,7 +116,7 @@ router.route('/')
                     });
                 } else if (person.permission === 'default') {
                     let queryparams = {}
-                    if (trackID) queryparams.trackID = trackID;
+                    if (trackID !== undefined) queryparams.trackID = trackID;
                     queryparams['$or'] = [{
                         'sender': person.email
                     }, {
@@ -137,8 +137,8 @@ router.route('/')
         });
     })
     .post(function (req, res) {
-        let SID = req.body.SID || "";
-        let newOrder = req.body.order || {};
+        let SID = req.body.SID;
+        let newOrder = req.body.order;
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
@@ -150,8 +150,8 @@ router.route('/')
             if (err) res.status(400).send('Error while querying database');
             else if (person) {
                 if (person.permission === 'default' && newOrder) newOrder.sender = person.email;
-                if (newOrder && newOrder.sender && newOrder.reciever && newOrder.from &&
-                    newOrder.to && newOrder.weight && newOrder.volume && newOrder.type) {
+                if (newOrder !== undefined && newOrder.sender !== undefined && newOrder.reciever !== undefined && newOrder.from !== undefined &&
+                    newOrder.to !== undefined && newOrder.weight !== undefined && newOrder.volume !== undefined && newOrder.type !== undefined) {
                     if (!validator.validate(newOrder.sender) || !validator.validate(newOrder.reciever) || (newOrder.from !== person.location && person.permission === 'operator')) {
                         res.status(400).send('Bad email or password');
                     } else {
@@ -253,7 +253,7 @@ router.route('/')
         });
     })
     .put(function (req, res) {
-        let SID = req.body.SID || "";
+        let SID = req.body.SID;
         let trackID = req.body.trackID || -1;
         let action = req.body.action || ""; //action - accept|giveout|return|cancel
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
@@ -334,7 +334,7 @@ router.route('/')
 
 router.route('/createContainer')
     .post(function (req, res) {
-        let SID = req.body.SID || "";
+        let SID = req.body.SID;
         let orderArray = req.body.orders || [];
 
         //orderArray contains only track numbers [1,5,2014,3123,131]
@@ -477,7 +477,7 @@ router.route('/createContainer')
 
 router.route('/confirmContainer')
     .post(function (req, res) {
-        let SID = req.body.SID || "";
+        let SID = req.body.SID;
         let shipID = req.body.shipID || -1;
         let containerID = req.body.containerID || -1;
 
@@ -544,8 +544,7 @@ router.route('/confirmContainer')
                                                         });
                                                     }
                                                 });
-                                            }
-                                            else res.status(400).send('Not all orders can be added');
+                                            } else res.status(400).send('Not all orders can be added');
                                         });
                                     } else res.status(400).send('Free ship not found');
                                 });
@@ -559,7 +558,7 @@ router.route('/confirmContainer')
 
 router.route('/acceptContainer')
     .post(function (req, res) {
-        let SID = req.body.SID || "";
+        let SID = req.body.SID;
         let containerID = req.body.containerID || -1;
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
@@ -665,7 +664,7 @@ router.route('/acceptContainer')
 
 router.route('/containers')
     .get(function (req, res) {
-        let SID = req.query.SID || "";
+        let SID = req.query.SID;
         let id = req.query.containerID || -1;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
