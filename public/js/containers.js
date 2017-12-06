@@ -24,32 +24,56 @@ function loadСontainers() {
     })
 }
 
-$('#Accept').click(function(){
-    var container_JSON={
-		  "SID":JSON.parse(localStorage.getItem("SID")),
-		  "containerID":$("#cID").val()
+$('#Accept').click(function () {
+    var container_JSON = {
+        "SID": JSON.parse(localStorage.getItem("SID")),
+        "containerID": $("#cID").val()
     }
-     $.ajax({
-         type: "POST",
-         url: url+"/acceptContainer",
-         data: container_JSON,
-         success: function () {
-             loadContainers();
-         },
-         error: function (status) {
-             alert(status.responseText)
-         }
-     })
+    $.ajax({
+        type: "POST",
+        url: url + "/acceptContainer",
+        data: container_JSON,
+        success: function () {
+            loadContainers();
+        },
+        error: function (status) {
+            alert(status.responseText)
+        }
+    })
+
 });
 
-var getImageFromUrl = function(data, callback) {
-    let url = 'https://chart.googleapis.com/chart?chs=512x512&cht=qr&chl='+data+'&choe=UTF-8&chld=H';
+//$.get("https://sspacedelivery.herokuapp.com/api/planets/getALl", function (data) {
+//    createShips(data);
+//})
+//
+//function createShips(data) {
+//    data.map(function (el) {
+//        $.post("https://sspacedelivery.herokuapp.com/api/ships", {
+//                "SID": JSON.parse(localStorage.getItem("SID")),
+//                "ship": {
+//                    location: el.name,
+//                    capacity: 1000,
+//                    volume: 1000,
+//                    ability: "innerGalactic",
+//                    speed: 1000,
+//                    consumption: 5
+//                }
+//            },
+//            function (data, status) {
+//                console.log("OK");
+//            })
+//    })
+//}
+
+var getImageFromUrl = function (data, callback) {
+    let url = 'https://chart.googleapis.com/chart?chs=512x512&cht=qr&chl=' + data + '&choe=UTF-8&chld=H';
     var img = new Image();
 
-    img.onError = function() {
-        alert('Cannot load image: "'+url+'"');
+    img.onError = function () {
+        alert('Cannot load image: "' + url + '"');
     };
-    img.onload = function() {
+    img.onload = function () {
         callback(img);
     };
     img.src = url;
@@ -57,7 +81,7 @@ var getImageFromUrl = function(data, callback) {
 }
 
 
-var createPDF = function(imgData) {
+var createPDF = function (imgData) {
     var doc = new jsPDF();
     doc.setFontSize(40)
     doc.addImage(imgData, 'JPEG', 20, 20, 170, 170);
@@ -74,7 +98,7 @@ function buildHtmlTable(selector, responseArr) {
         }
     });
 
-    keys.push('Apply'); 
+    keys.push('Apply');
     var table = "<table class='table-bordered table-hover table-responsive' style='margin: 0 auto; border-collapse: collapse;'>";
 
     table += "<tr>"
@@ -89,37 +113,35 @@ function buildHtmlTable(selector, responseArr) {
         for (j = 0; j < keys.length; ++j) {
             table += "<td>";
             if (temp[keys[j]] !== undefined) {
-                if (keys[j] !== 'properties'||!temp[keys[j]][0].shipID){
+                if (keys[j] !== 'properties' || !temp[keys[j]][0].shipID) {
 
-                    if(keys[j]=='Apply'){
+                    if (keys[j] == 'Apply') {
                         console.log("LEL");
                         table += '<i class="fa fa-times-circle fa-2x"></i>'
-                    } 
-                    else if (keys[j] == 'properties'){
-                        let totalTime=0, totalPrice=0;
-                        temp[keys[j]].forEach(function(el){
+                    } else if (keys[j] == 'properties') {
+                        let totalTime = 0,
+                            totalPrice = 0;
+                        temp[keys[j]].forEach(function (el) {
                             totalPrice += el.price;
                             totalTime += el.time;
                         });
                         table += "Time " + formatTime(totalTime) + ", price " + totalPrice;
-                        
-                    } 
-                    else{
-                        if(Array.isArray(temp[keys[j]])&&keys[j]!=='ordersIDArray'){
-                            temp[keys[j]].forEach(function(el,i){
-                                if(Array.isArray(el)) table += "" + (i+1) + ": " + el.join(", ") + "<br>";
-                                else table += "" + (i+1) + ": " + el + "<br>";
+
+                    } else {
+                        if (Array.isArray(temp[keys[j]]) && keys[j] !== 'ordersIDArray') {
+                            temp[keys[j]].forEach(function (el, i) {
+                                if (Array.isArray(el)) table += "" + (i + 1) + ": " + el.join(", ") + "<br>";
+                                else table += "" + (i + 1) + ": " + el + "<br>";
                             })
-                        }
-                        else table += temp[keys[j]];
+                        } else table += temp[keys[j]];
                     }
-                } 
-                else {
+                } else {
                     unconfirmed = true;
                     table += "<select><option disabled selected value> -- select an option -- </option>";
                     temp[keys[j]].forEach(function (el) {
-                        let totalTime=0, totalPrice=0;
-                        el.properties.forEach(function(el){
+                        let totalTime = 0,
+                            totalPrice = 0;
+                        el.properties.forEach(function (el) {
                             totalPrice += el.price;
                             totalTime += el.time;
                         });
@@ -127,8 +149,8 @@ function buildHtmlTable(selector, responseArr) {
                     });
                     table += "</select>";
                 }
-                
-            }else if(keys[j]=='Apply'&&unconfirmed) table += "<i class='fa fa-check-circle-o fa-2x' style='color:green'></i>";
+
+            } else if (keys[j] == 'Apply' && unconfirmed) table += "<i class='fa fa-check-circle-o fa-2x' style='color:green'></i>";
             else table += "";
             table += "</td>";
         }
@@ -141,19 +163,19 @@ function buildHtmlTable(selector, responseArr) {
 
 table.addEventListener('click', confirmContainer);
 
-function confirmContainer(e){
-    if(e.target.localName==='i'){
+function confirmContainer(e) {
+    if (e.target.localName === 'i') {
         let trArray = e.target.parentNode.parentNode.childNodes;
         let containerID = trArray[0].innerText;
         let params = "";
-        trArray.forEach(function(el){
-            if(el.childNodes[0] && el.childNodes[0].value && el.childNodes[0].value.length>0) params = el.childNodes[0].value;
+        trArray.forEach(function (el) {
+            if (el.childNodes[0] && el.childNodes[0].value && el.childNodes[0].value.length > 0) params = el.childNodes[0].value;
         })
         let shipID = params.split(' ').pop();
-        
-        getImageFromUrl("SSDС"+(1000000000+containerID).toString().substr(1), createPDF);
-        
-        if(containerID&&shipID){
+
+        getImageFromUrl("SSDС" + (1000000000 + containerID).toString().substr(1), createPDF);
+
+        if (containerID && shipID) {
             var confirm = {
                 "SID": JSON.parse(localStorage.getItem("SID")),
                 "shipID": shipID,
@@ -161,7 +183,7 @@ function confirmContainer(e){
             }
             $.ajax({
                 type: "POST",
-                url: url+"/confirmContainer",
+                url: url + "/confirmContainer",
                 data: confirm,
                 success: function () {
                     loadСontainers();
