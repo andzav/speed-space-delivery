@@ -19,7 +19,7 @@ let smtpTransport = nodemailer.createTransport({
 
 router.route('/')
     .get(function(req, res){
-        let SID = req.query.SID;
+        let SID = req.query.SID || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, '-_id -__v' , function (err, person) {
@@ -37,9 +37,9 @@ router.route('/')
         });
     })
     .post(function(req, res) {
-        let email = req.body.email;
-        let password = req.body.password;
-        let token = req.body.token;
+        let email = req.body.email || "";
+        let password = req.body.password || "";
+        let token = req.body.token || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email) || !password){
@@ -103,8 +103,8 @@ router.route('/')
         }
     })
     .put(function(req,res){
-        let email = req.body.email;
-        let password = req.body.password;
+        let email = req.body.email || "";
+        let password = req.body.password || "";
 
         let ip = 'LUL' + req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email)||!password){
@@ -134,8 +134,8 @@ router.route('/')
         }
     })
     .delete(function(req, res) {
-        let email = req.body.email;
-        let SID = req.body.SID;
+        let email = req.body.email || "";
+        let SID = req.body.SID || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email)){
@@ -157,9 +157,9 @@ router.route('/')
 
 router.route('/addOperator')
     .post(function(req, res) {
-        let email = req.body.email;
-        let SID = req.body.SID;
-        let location = req.body.location;
+        let email = req.body.email || "";
+        let SID = req.body.SID || "";
+        let location = req.body.location || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email)||typeof SID!=='string'){
@@ -213,8 +213,8 @@ router.route('/addOperator')
 
 router.route('/addAdmin')
     .post(function(req, res) {
-        let email = req.body.email;
-        let SID = req.body.SID;
+        let email = req.body.email || "";
+        let SID = req.body.SID || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email)||typeof SID!=='string'){
@@ -262,8 +262,8 @@ router.route('/addAdmin')
 
 router.route('/register')
     .post(function(req,res){
-        let email = req.body.email;
-        let password = req.body.password;
+        let email = req.body.email || "";
+        let password = req.body.password || "";
 
         if(!validator.validate(email)||!password||password.length<8){
             res.status(400).send('Bad email or password');
@@ -301,8 +301,8 @@ router.route('/register')
 
 router.route('/removePermission')
     .post(function (req, res){
-        let email = req.body.email;
-        let SID = req.body.SID;
+        let email = req.body.email || "";
+        let SID = req.body.SID || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!validator.validate(email)){
@@ -331,8 +331,8 @@ router.route('/removePermission')
 
 router.route('/confirm')
     .post(function(req,res){
-        let email = req.body.email;
-        let cCode = req.body.code;
+        let email = req.body.email || "";
+        let cCode = req.body.code || 0;
 
         if(!validator.validate(email)||cCode===undefined){
             res.status(400).send('Bad email or password');
@@ -352,7 +352,7 @@ router.route('/confirm')
 
 router.route('/logout')
     .post(function(req, res){
-        let SID = req.body.SID;
+        let SID = req.body.SID || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, function (err, person){
@@ -370,8 +370,7 @@ router.route('/logout')
 
 router.route('/addTFA')
     .post(function(req, res){
-        console.log(JSON.stringify(req.fingerprint));
-        let SID = req.body.SID;
+        let SID = req.body.SID || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, function (err, person) {
@@ -392,8 +391,8 @@ router.route('/addTFA')
 
 router.route('/confirmTFA')
     .post(function(req, res){
-        let SID = req.body.SID;
-        let token = req.body.token;
+        let SID = req.body.SID || "";
+        let token = req.body.token || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
@@ -419,11 +418,11 @@ router.route('/confirmTFA')
 
 router.route('/removeTFA')
     .post(function(req, res){
-        let SID = req.body.SID;
-        let email = req.body.email;
-        let password = req.body.password;
-        let secret = req.body.secret;
-        let token = req.body.token;
+        let SID = req.body.SID || "";
+        let email = req.body.email || "";
+        let password = req.body.password || "";
+        let secret = req.body.secret || "";
+        let token = req.body.token || "";
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
         if(!secret&&!token){
@@ -467,7 +466,7 @@ router.route('/removeTFA')
 
 router.route('/logoutAll')
     .post(function(req, res){
-        let SID = req.body.SID;
+        let SID = req.body.SID || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, function (err, person){
@@ -484,7 +483,7 @@ router.route('/logoutAll')
 
 router.route('/checkPermission')
     .get(function(req, res){
-        let SID = req.query.SID;
+        let SID = req.query.SID || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, '-_id -__v' , function (err, person) {

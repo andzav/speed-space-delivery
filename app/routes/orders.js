@@ -13,8 +13,8 @@ let utils = require('../utils/algorithm.js');
 
 router.route('/')
     .get(function (req, res) {
-        let SID = req.query.SID;
-        let trackID = req.query.trackID;
+        let SID = req.query.SID || "";
+        let trackID = req.query.trackID || -1;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({
@@ -137,8 +137,8 @@ router.route('/')
         });
     })
     .post(function (req, res) {
-        let SID = req.body.SID;
-        let newOrder = req.body.order;
+        let SID = req.body.SID || "";
+        let newOrder = req.body.order || {};
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
@@ -253,9 +253,9 @@ router.route('/')
         });
     })
     .put(function (req, res) {
-        let SID = req.body.SID;
-        let trackID = req.body.trackID;
-        let action = req.body.action; //action - accept|giveout|return|cancel
+        let SID = req.body.SID || "";
+        let trackID = req.body.trackID || -1;
+        let action = req.body.action || ""; //action - accept|giveout|return|cancel
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({
@@ -334,8 +334,8 @@ router.route('/')
 
 router.route('/createContainer')
     .post(function (req, res) {
-        let SID = req.body.SID;
-        let orderArray = req.body.orders;
+        let SID = req.body.SID || "";
+        let orderArray = req.body.orders || [];
 
         //orderArray contains only track numbers [1,5,2014,3123,131]
 
@@ -477,9 +477,9 @@ router.route('/createContainer')
 
 router.route('/confirmContainer')
     .post(function (req, res) {
-        let SID = req.body.SID;
-        let shipID = req.body.shipID;
-        let containerID = req.body.containerID;
+        let SID = req.body.SID || "";
+        let shipID = req.body.shipID || -1;
+        let containerID = req.body.containerID || -1;
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
@@ -559,8 +559,8 @@ router.route('/confirmContainer')
 
 router.route('/acceptContainer')
     .post(function (req, res) {
-        let SID = req.body.SID;
-        let containerID = req.body.containerID;
+        let SID = req.body.SID || "";
+        let containerID = req.body.containerID || -1;
 
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
@@ -665,8 +665,8 @@ router.route('/acceptContainer')
 
 router.route('/containers')
     .get(function (req, res) {
-        let SID = req.query.SID;
-        let id = req.query.containerID;
+        let SID = req.query.SID || "";
+        let id = req.query.containerID || -1;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({

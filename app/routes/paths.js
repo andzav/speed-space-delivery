@@ -6,8 +6,8 @@ let planetModel = require('../models/planet.js');
 
 router.route('/')
     .get(function (req, res) {
-        let SID = req.query.SID;
-        let params = req.query;
+        let SID = req.query.SID || "";
+        let params = req.query || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -68,8 +68,8 @@ router.route('/')
         });
     })
     .post(function (req, res) {
-        let SID = req.body.SID;
-        let newPath = req.body.path;
+        let SID = req.body.SID || "";
+        let newPath = req.body.path || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -126,8 +126,8 @@ router.route('/')
         });
     })
     .put(function(req, res){
-        let SID = req.body.SID;
-        let path = req.body.path;
+        let SID = req.body.SID || "";
+        let path = req.body.path || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -161,8 +161,8 @@ router.route('/')
         });
     })
     .delete(function(req, res){
-        let SID = req.body.SID;
-        let query = req.body.pathParams;
+        let SID = req.body.SID || "";
+        let query = req.body.pathParams || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {

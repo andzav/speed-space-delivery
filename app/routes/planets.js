@@ -11,11 +11,11 @@ let fs = require('fs');
 
 router.route('/')
     .get(function(req, res){
-        let SID = req.query.SID;
-        let name = req.query.name;
-        let galactic = req.query.galactic;
-        let type = req.query.type;
-        let moonOf = req.query.moonOf
+        let SID = req.query.SID || "";
+        let name = req.query.name || 0;
+        let galactic = req.query.galactic || 0;
+        let type = req.query.type || 0;
+        let moonOf = req.query.moonOf || 0;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -57,8 +57,8 @@ router.route('/')
         });
     })
     .post(function(req, res) {
-        let SID = req.body.SID;
-        let newPlanet = req.body.planet;
+        let SID = req.body.SID || "";
+        let newPlanet = req.body.planet || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -96,8 +96,8 @@ router.route('/')
         });   
     })
     .put(function(req, res) {
-        let SID = req.body.SID;
-        let newPlanet = req.body.planet;
+        let SID = req.body.SID || "";
+        let newPlanet = req.body.planet || {};
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
@@ -139,8 +139,8 @@ router.route('/')
         });
     })
     .delete(function(req, res) {
-        let SID = req.body.SID;
-        let planet = req.body.planetName;
+        let SID = req.body.SID || "";
+        let planet = req.body.planetName || "";
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
         userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission' , function (err, person) {
@@ -188,7 +188,7 @@ router.route('/getAll')
     });
 
 router.post('/planetImg', upload.single('file'), function(req, res) {
-    let SID = req.body.SID;
+    let SID = req.body.SID || "";
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     
     userModel.findOne({'sessions.SID': SID, 'sessions.ip': ip, 'sessions.fingerprint': req.fingerprint.hash}, 'permission email' , function (err, person) {
