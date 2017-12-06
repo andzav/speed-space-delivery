@@ -19,7 +19,7 @@ function loadPageByPerm(perm){
 	   
 		 
 	console.log("Your permission is: "+perm);
-	console.log(location.pathName);
+	console.log(location.pathname);
 	var fileName=location.pathname.match(/[^\/]+$/)[0];
 	//console.log(fileName);
 	
