@@ -64,7 +64,23 @@ router.route('/')
                         }
                     }, function (err, result) {
                         if (err) res.status(400).send('Error while querying planet database');
-                        else res.json(result);
+                        else if (result && result.length > 0) {
+                            result = result.map(function (el) {
+                                let modified = {};
+                                modified.position = JSON.parse(JSON.stringify(el.position));
+                                el.position = undefined;
+                                modified.data = el;
+                                modified.group = "nodes";
+                                modified.removed = false;
+                                modified.selected = false;
+                                modified.selectable = true;
+                                modified.locked = true;
+                                modified.grabbable = true;
+                                modified.classes = "";
+                                return modified;
+                            });
+                            res.json(result);
+                        } else res.status(400).send('Can not find any planers');
                     });
                 }
             } else res.status(401).send('User not found');
