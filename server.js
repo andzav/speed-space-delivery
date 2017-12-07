@@ -69,18 +69,21 @@ app.get('/:filename', function(req, res) {
         if (err) res.sendStatus(400);
         else if(person){
             console.log(person)
-            if(person.permission==='admin') res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
-            else if(person.permission==='operator'){
-                if(req.params.filename==='users') res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
+            if(person.permission=='admin'){
+                console.log('trig');
+                res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
+            }
+            else if(person.permission=='operator'){
+                if(req.params.filename=='users') res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
                 else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
             }else{
                 console.log(req.params.filename);
-                if(req.params.filename!=='main_user_page.html'&&req.params.filename!=='log-in.html'&&req.params.filename!=='sing-up.html'&&req.params.filename!=='index.html')                  res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
+                if(req.params.filename!='main_user_page.html'&&req.params.filename!='log-in.html'&&req.params.filename!='sing-up.html'&&req.params.filename!='index.html')                  res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
                 else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
             }
         }else{
             //SIGN NOT SING
-            if(req.params.filename!=='log-in.html'&&req.params.filename!=='sing-up.html'&&req.params.filename!=='index.html')
+            if(req.params.filename!='log-in.html'&&req.params.filename!='sing-up.html'&&req.params.filename!='index.html')
                 res.sendFile(path.join(__dirname, 'public', 'pages', '404.html'));
             else res.sendFile(path.join(__dirname, 'public', 'pages', req.params.filename));
         }
