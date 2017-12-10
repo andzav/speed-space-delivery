@@ -665,7 +665,7 @@ router.route('/acceptContainer')
 router.route('/containers')
     .get(function (req, res) {
         let SID = req.query.SID;
-        let id = req.query.containerID || -1;
+        let id = req.query.containerID;
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 
         userModel.findOne({
