@@ -30,7 +30,7 @@ router.route('/')
             if (err) res.status(400).send('Error while querying database');
             else if (person) {
                 if (person.permission === 'admin') {
-                    userModel.find({}, "-_id -__v -sessions -modification -password -salt -secret", function (err, data) {
+                    userModel.find({}, "-_id -__v -sessions -modification -secret_unconfirmed -password -salt -secret", function (err, data) {
                         if (err) res.status(400).send('Error while querying database');
                         else if (data.length > 0) {
                             res.json(data);
